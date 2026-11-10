@@ -1,0 +1,19 @@
+enum MissionType {
+    daily
+    personalized
+    quest
+}
+
+enum Difficulty {
+    easy
+    medium
+    hard
+    expert
+}
+
+enum Rarity {
+    common
+    rare
+    epic
+    legendary
+}

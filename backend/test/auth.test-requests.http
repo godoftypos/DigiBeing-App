@@ -1,0 +1,58 @@
+### User API Test Requests
+
+# Set base URL
+@baseUrl = http://192.168.1.5:8000/users
+@testEmail = dhruvlohar09@gmail.com
+@testName = John Doe
+@testPhone = 9321781063
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFiNmI3ZjUwM2EwMzBmYTVkNmNhODEiLCJpYXQiOjE3NTYxMTkxMjAsImV4cCI6MTc1NjM3ODMyMH0.7S7sg_mfKEiFA42pmSTYrYaUIwdfzemTB_OMz9J1_o0
+
+### 1. Register a new user
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+  "name": "{{testName}}",
+  "email": "{{testEmail}}",
+  "phone": "{{testPhone}}"
+}
+
+### 2. Get email/OTP for registration (if needed)
+POST {{baseUrl}}/get-email
+Content-Type: application/json
+
+{
+  "uid": "68ab6b7f503a030fa5d6ca81"
+}
+
+### 3. Verify email with OTP (Complete Registration)
+POST {{baseUrl}}/verify-email
+Content-Type: application/json
+
+{
+  "uid": "68ab6b7f503a030fa5d6ca81",
+  "otp": "802801"
+}
+
+### 4. Login user (sends OTP to email)
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}"
+}
+
+
+### 7. Get user profile (requires authentication)
+GET {{baseUrl}}/get-profile
+Authorization: Bearer {{token}}
+
+### 8. Update user profile (requires authentication)
+POST {{baseUrl}}/update-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Dhruv Lohar",
+  "phone": "+1234567891"
+}

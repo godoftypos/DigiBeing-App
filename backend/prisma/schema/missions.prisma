@@ -1,0 +1,102 @@
+model Mission {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  difficulty  Difficulty
+  rewardXp    Int
+  icon        String
+  type        MissionType
+  goalMinutes Int? // For time-based goals
+  category    String? // e.g., "Weekly Challenge" for quests
+  isGlobal    Boolean     @default(false) // For daily missions that apply to all users
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relation to track user progress
+  userMissions UserMission[]
+}
+
+model UserMission {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String  @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  missionId String? @db.ObjectId // Optional for personalized missions
+  mission   Mission? @relation(fields: [missionId], references: [id])
+
+  // For personalized missions generated on-the-fly
+  title       String?
+  description String?
+  difficulty  Difficulty?
+  rewardXp    Int?
+  icon        String?
+  goalMinutes Int?
+  category    String?
+  
+  // App-specific mission fields
+  targetApp       String? // Package name of the target app
+  restrictionType String? // time_limit, time_zone, no_usage, reduced_usage, category_ban
+
+  progress    Int       @default(0) // Can be minutes or days depending on mission
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  assignedAt  DateTime  @default(now())
+  date        DateTime  @default(now()) // To track daily missions
+
+  @@index([userId, date])
+  @@index([userId, missionId])
+}
+
+model Badge {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  icon        String
+  rarity      Rarity
+
+  // Relation to track user unlocks
+  userBadges UserBadge[]
+}
+
+model UserBadge {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String   @db.ObjectId
+  user     User     @relation(fields: [userId], references: [id])
+  badgeId  String   @db.ObjectId
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+  earnedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+}
+
+model Achievement {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  slug        String @unique
+  icon        String?
+  category    String? // e.g., "Social Media", "Focus", "Streak"
+  threshold   Int? // For achievements that require a certain number/amount
+  
+  // Relation to track user completions
+  completedAchievements CompletedAchievement[]
+
+  // timestamps
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("achievements")
+}
+
+model CompletedAchievement {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String      @db.ObjectId
+  user          User        @relation(fields: [userId], references: [id])
+  achievementId String      @db.ObjectId
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  
+  completedAt   DateTime    @default(now())
+  progress      Int?        // Optional: track progress value when completed
+
+  @@unique([userId, achievementId])
+  @@map("completed_achievements")
+}

@@ -1,0 +1,69 @@
+### User API Test Requests
+@baseUrl = http://192.168.1.5:8000/users
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFiNmI3ZjUwM2EwMzBmYTVkNmNhODEiLCJpYXQiOjE3NTYwNjQ2NjYsImV4cCI6MTc1NjMyMzg2Nn0.npgciwDp_dTe53eDc6BnhcYghOpfOQKkSGgYn2pEL-A
+
+#### Testing GenAI
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AIzaSyCKqamX3O6bhJrVdrmQf-KvJF2CnQa3ckE' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
+
+#### Get User Dashboard
+GET {{baseUrl}}/dashboard
+Authorization: Bearer {{accessToken}}
+
+#### Update Usage Data
+POST {{baseUrl}}/update-usage-data
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "usageData": [
+        {
+            "app": "Instagram",
+            "packageName": "com.instagram.android",
+            "usage": 4500,
+            "currentTimeStamp": "2025-08-24T12:00:00Z"
+        },
+        {
+            "app": "Snapchat",
+            "packageName": "com.snapchat.android",
+            "usage": 7000,
+            "currentTimeStamp": "2025-08-24T12:00:00Z"
+        },
+        {
+            "app": "Facebook",
+            "packageName": "com.facebook.katana",
+            "usage": 5200,
+            "currentTimeStamp": "2025-08-24T12:00:00Z"
+        }
+    ]
+}
+
+#### Get All Achievements
+GET {{baseUrl}}/achievements
+Authorization: Bearer {{accessToken}}
+
+#### Get All Missions
+GET {{baseUrl}}/missions
+Authorization: Bearer {{accessToken}}
+
+#### Mark Mission as Complete
+POST {{baseUrl}}/missions/complete
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "missionId": "1"
+}
